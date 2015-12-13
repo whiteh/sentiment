@@ -1,6 +1,6 @@
 #Sentiment
 
-Personal data analysis project using Python's nltk module
+Twitter data analysis using Python's nltk module
 
 #Data
 I've used sentene polarity data from Pang and Lee's public daa, first used in their paper:
