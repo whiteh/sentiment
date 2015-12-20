@@ -25,6 +25,7 @@ class csvExtracter:
     else:
       doc.setLabel(self.label_const)
     doc.setText(self.clean(parts[self.text_col]))
+    return doc
 
 class corpus:
   def __init__(self, loc = None, extracter=None):
@@ -63,6 +64,11 @@ class corpus:
     except Exception as e:
       raise e;
 
-extracter = csvExtracter(label_col=0,text_col=4, delim_patt='"')
-extracter.setLabelDictionary({"0":"pos", "4":"neg"})
-c = corpus(loc="/home/nitrous/data/sentiment140/training.1600000.processed.noemoticon.csv", extracter=extracter)
+    def each(self, callback):
+      for a in self.docs:
+        callback(a)
+
+# extracter = csvExtracter(label_col=0,text_col=4, delim_patt='"')
+# extracter.setLabelDictionary({"0":"pos", "4":"neg"})
+# c = corpus(loc="/home/nitrous/data/sentiment140/training.1600000.processed.noemoticon.csv", extracter=extracter)
+# print c.docs[0]

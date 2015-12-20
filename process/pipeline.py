@@ -1,3 +1,5 @@
+from corpus import corpus
+
 class pipeline:
   def __init__(self):
     self.stages = []
@@ -16,6 +18,16 @@ class pipeline:
           self.stages.append(None)
           a+=1
       self.stages.insert(position, phase)
+
+  def processDoc(doc):
+    for a in stages:
+      if (a != None):
+        doc = a.run(doc)
+    return doc
+
+  def process(corpus):
+    corpus.each(processDoc)
+
 
 ## Tests
 def test(testname, cond):
