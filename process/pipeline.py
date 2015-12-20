@@ -1,6 +1,4 @@
-from corpus import corpus
-
-class pipeline:
+class pipeline(object):
   def __init__(self):
     self.stages = []
 
@@ -19,15 +17,18 @@ class pipeline:
           a+=1
       self.stages.insert(position, phase)
 
-  def processDoc(doc):
-    for a in stages:
+  def processDoc(self, doc):
+    for a in self.stages:
       if (a != None):
-        doc = a.run(doc)
+        a.run(doc)
     return doc
 
-  def process(corpus):
-    corpus.each(processDoc)
+  def process(self, corpus):
+    corpus.each(self.processDoc)
 
+  def toString(self):
+    s = [i.__class__.__name__+" => " for i in self.stages if i != None]
+    print ' => '.join(s) + "end;"
 
 ## Tests
 def test(testname, cond):
@@ -36,25 +37,26 @@ def test(testname, cond):
   else:
     print testname+": NOK **"
 
+def runTests():
+  pipe = pipeline()
+  pipe.addPhase("phase 1") ## append first item
+  test("first phase - len", len(pipe.stages)==1)
+  test("first phase - success", pipe.stages[0]=="phase 1")
 
+  pipe.addPhase("phase 2", 1)  ## should be equal to append
+  test("second phase - len", len(pipe.stages)==2)
+  test("second phase - appended", pipe.stages[1]=="phase 2")
 
-pipe = pipeline()
-pipe.addPhase("phase 1") ## append first item
-test("first phase - len", len(pipe.stages)==1)
-test("first phase - success", pipe.stages[0]=="phase 1")
+  pipe.addPhase("phase 3", 1)  ## insert between items
+  test("third phase - len", len(pipe.stages)==3)
+  test("third phase - inserted", (pipe.stages[1]=="phase 3" and pipe.stages[2]=="phase 2"))
 
-pipe.addPhase("phase 2", 1)  ## should be equal to append
-test("second phase - len", len(pipe.stages)==2)
-test("second phase - appended", pipe.stages[1]=="phase 2")
+  pipe.addPhase("phase 4", 6)  ## fill in with None
+  test("four phase - len", len(pipe.stages)==6)
+  test("four phase - filled in list", (pipe.stages[3]==None and pipe.stages[5]=="phase 4"))
 
-pipe.addPhase("phase 3", 1)  ## insert between items
-test("third phase - len", len(pipe.stages)==3)
-test("third phase - inserted", (pipe.stages[1]=="phase 3" and pipe.stages[2]=="phase 2"))
-
-pipe.addPhase("phase 4", 6)  ## fill in with None
-test("four phase - len", len(pipe.stages)==6)
-test("four phase - filled in list", (pipe.stages[3]==None and pipe.stages[5]=="phase 4"))
-
+if __name__== "__main__":
+  runTests()
 
 # for a in pipe.stages:
 #   print a
