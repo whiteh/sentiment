@@ -2,10 +2,12 @@ from pipeline import pipeline
 import nltk
 from nltk.corpus import stopwords
 import string
+import re
 
 class NLTKpipeline(pipeline):
   def __init__(self):
     super(NLTKpipeline, self).__init__()
+    self.addPhase(twitterPhase())
     self.addPhase(tokenisationPhase())
     self.addPhase(lemmatisationPhase())
 
@@ -32,6 +34,26 @@ class lemmatisationPhase:
     else:
       raise "Lemmatisation before tokenisation error"
 
+
+class twitterPhase:
+
+  def getMentions(self, text):
+    regex = re.compile("(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)")
+    return regex.findall(text)
+
+  def getHashtags(self, text):
+    regex = re.compile("#\\w*")
+    return regex.findall(text)
+
+  def getURLs(self, text):
+    regex = re.compile('[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)')
+    return regex.findall(text)
+
+  def run(self, doc):
+    text = doc.getParam("text")
+    doc.addParam("hashtags", self.getHashtags(text))
+    doc.addParam("urls", self.getURLs(text))
+    doc.addParam("mentions", self.getMentions(text))
 
 
 

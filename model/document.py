@@ -5,7 +5,7 @@ class document:
     self.addParam("label", "")
 
   def setText(self, text):
-    self.addParam("text", text)
+    self.addParam("text", unicode(text))
 
   def setLabel(self, label):
     self.addParam("label", label)

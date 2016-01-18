@@ -21,6 +21,7 @@ class csvExtractor:
     doc.setText(parts[self.text_col])
 
     if (self.label_const == None):
+      #print parts[self.label_col]+": "+self.label_dict[self.clean(parts[self.label_col])]
       doc.setLabel(self.label_dict[self.clean(parts[self.label_col])])
     else:
       doc.setLabel(self.label_const)
@@ -70,7 +71,7 @@ class corpus:
 
 def runTests():
   extractor = csvExtractor(label_col=0,text_col=4, delim_patt='"')
-  extractor.setLabelDictionary({"0":"pos", "4":"neg"})
+  extractor.setLabelDictionary({"0":"neg", "4":"pos"})
   c = corpus(loc="/home/nitrous/data/sentiment140/training.1600000.processed.noemoticon.csv", extractor=extractor)
 
 if __name__ == "__main__":

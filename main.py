@@ -8,8 +8,9 @@ from corpus import csvExtractor
 from NLTKpipeline import NLTKpipeline
 
 extractor = csvExtractor(label_col=0,text_col=5, delim_patt='"')
-extractor.setLabelDictionary({"0":"pos", "4":"neg"})
-c = corpus(loc="/home/nitrous/data/sentiment140/subset.csv", extractor=extractor)
+extractor.setLabelDictionary({"0":"neg", "4":"pos"})
+#c = corpus(loc="/home/nitrous/data/sentiment140/subset.csv", extractor=extractor)
+c = corpus(loc="/home/nitrous/data/sentiment140/rand_subset.csv", extractor=extractor)
 
 pipeline = NLTKpipeline()
 pipeline.process(c)
