@@ -50,7 +50,10 @@ class corpus:
     count = 0
     f = self.openFile()
     for line in f:
-      item = self.extractor.run(line)
+      try:
+        item = self.extractor.run(line)
+      except Exception as e:
+        print "Exception in loadFromFile: "+str(e)
       self.docs.append(item)
       count+=1
     print str(count)+" documents loaded: "+str(len(self.docs))+" in collection..."
@@ -68,6 +71,12 @@ class corpus:
   def each(self, callback):
     for a in self.docs:
       callback(a)
+
+  def toVector(self):
+    l = []
+    for a in self.docs:
+      l.append(a.toVector())
+    return l
 
 def runTests():
   extractor = csvExtractor(label_col=0,text_col=4, delim_patt='"')
