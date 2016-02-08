@@ -1,16 +1,18 @@
 import web
 import json
 import mimerender
-import nltk
-from nltk.corpus import stopwords
 import string
 import pickle
+import sys
+
+sys.path.append('../model')
+sys.path.append('../process')
+from NLTKpipeline import NLTKpipeline
+from document import document
 
 mimerender = mimerender.WebPyMimeRender()
-stop = stopwords.words('english') + [i for i in string.punctuation]
-wnl = nltk.WordNetLemmatizer()
 
-f = open('../training/my_classifier.pickle', 'rb')
+f = open('../my_classifier.pickle', 'rb')
 classifier = pickle.load(f)
 f.close()
 
@@ -19,31 +21,18 @@ render_json = lambda **args: json.dumps(args)
 render_html = lambda message: '<html><body>%s</body></html>'%message
 render_txt = lambda message: message
 
+process = NLTKpipeline()
+
 urls = (
     '/(tweet)', 'tweetClassify'
 )
 app = web.application(urls, globals())
 
 def preprocess(sent):
-      tokens  = [i for i in nltk.word_tokenize(sent.lower()) if i not in stop]
-      lemmatised = [wnl.lemmatize(t) for t in tokens]
-      index = dict.fromkeys(set(lemmatised), 0)
-      for b in lemmatised:
-        index[b] += 1.0
-      return index
-
-class greet:
-    @mimerender(
-        default = 'html',
-        html = render_html,
-        xml  = render_xml,
-        json = render_json,
-        txt  = render_txt
-    )
-    def GET(self, name):
-        if not name:
-            name = 'world'
-        return {'message': 'Hello, ' + name + '!'}
+    doc = document()
+    doc.setText(sent)
+    process.processDoc(doc)
+    return doc.toVector()[0]
 
 class tweetClassify:
     @mimerender(
